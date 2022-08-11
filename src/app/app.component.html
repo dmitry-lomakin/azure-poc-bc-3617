@@ -1,0 +1,9 @@
+<div class="container pt-5">
+    <p>
+        <button *ngIf="!loginDisplay" nui-button type="button" displayStyle="primary" (click)="login()">Connect Azure account</button>
+        <ng-container *ngIf="loginDisplay">
+            <p>Connected to Azure account {{ profile.displayName }}. <span class="nui-text-link" style="cursor: pointer;" (click)="logout()">Disconnect</span></p>
+        </ng-container>
+    </p>
+    <router-outlet *ngIf="!isIframe"></router-outlet>
+</div>

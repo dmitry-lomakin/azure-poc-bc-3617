@@ -1,0 +1,80 @@
+<div style="display: flex;">
+    <form [formGroup]="settingsForm" class="nui-edge-definer" [style.width.px]="500">
+        <nui-form-field caption="Subscription" [showOptionalText]="false" [control]="settingsForm.controls.subscriptionId" class="d-block mb-5">
+            <nui-select-v2 placeholder="Enter an Azure subscription" formControlName="subscriptionId" [displayValueTemplate]="selectedSubscriptionTemplate" #subscriptionSelect>
+                <nui-select-v2-option *ngFor="let sub of subscriptions$ | async | keyvalue" [value]="sub.key" [displayValueContext]="sub.value">
+                    {{ sub.value }}
+                </nui-select-v2-option>
+            </nui-select-v2>
+            <ng-template #selectedSubscriptionTemplate let-subscriptionName>
+                <div class="nui-select-v2__value">
+                    <div *ngIf="subscriptionName else emptySubscription" class="d-flex align-items-center nui-select-v2__value-content">
+                        {{ subscriptionName }}
+                    </div>
+
+                    <nui-icon [style.transform]="subscriptionSelect.isDropdownOpen ? 'rotate(180deg)' : ''" icon="caret-down"></nui-icon>
+                </div>
+
+                <ng-template #emptySubscription>
+                    <span class="nui-select-v2__placeholder">Select Azure subscription</span>
+                </ng-template>
+            </ng-template>
+        </nui-form-field>
+        <nui-form-field caption="Resource group" [showOptionalText]="false" [control]="settingsForm.controls.resourceGroupName" class="d-block mb-5">
+            <nui-select-v2 placeholder="Enter a resource group" formControlName="resourceGroupName">
+                <nui-select-v2-option *ngFor="let rg of resourceGroups$ | async" [value]="rg">
+                    <span [nuiComboboxV2OptionHighlight]="rg"></span>
+                </nui-select-v2-option>
+            </nui-select-v2>
+        </nui-form-field>
+        <nui-form-field caption="Virtual machine name" [control]="settingsForm.controls.virtualMachineName" class="d-block mb-5">
+            <nui-textbox placeholder="Enter a virtual machine name" formControlName="virtualMachineName"></nui-textbox>
+        </nui-form-field>
+        <nui-form-field caption="Region" [showOptionalText]="false" [control]="settingsForm.controls.region" class="d-block mb-5">
+            <nui-select-v2 placeholder="Select region" formControlName="region">
+                <nui-select-v2-option *ngFor="let region of regions$ | async" [value]="region">{{ region }}</nui-select-v2-option>
+            </nui-select-v2>
+        </nui-form-field>
+        <nui-form-field caption="VM size" [showOptionalText]="false" [control]="settingsForm.controls.vmSize" class="d-block mb-5">
+            <nui-select-v2 placeholder="Select the size of your virtual machine" formControlName="vmSize">
+                <nui-select-v2-option *ngFor="let size of availableSizes$ | async" [value]="size">{{ size }}</nui-select-v2-option>
+            </nui-select-v2>
+        </nui-form-field>
+        <nui-form-field caption="OS disk type" [showOptionalText]="false" [control]="settingsForm.controls.osDiskType" class="d-block mb-5">
+            <nui-select-v2 placeholder="Select disk type" formControlName="osDiskType" [displayValueTemplate]="selectedOsDiskTypeTemplate" #osDiskTypeSelect>
+                <nui-select-v2-option *ngFor="let type of osDiskTypes" [value]="type.id" [displayValueContext]="type">
+                    <div>{{ type.label }}</div>
+                    <div>{{ type.description }}</div>
+                </nui-select-v2-option>
+            </nui-select-v2>
+            <ng-template #selectedOsDiskTypeTemplate let-type>
+                <div class="nui-select-v2__value">
+                    <div *ngIf="type else emptyOsDiskType" class="d-flex align-items-center nui-select-v2__value-content">
+                        {{ type.label }}
+                    </div>
+
+                    <nui-icon [style.transform]="osDiskTypeSelect.isDropdownOpen ? 'rotate(180deg)' : ''" icon="caret-down"></nui-icon>
+                </div>
+
+                <ng-template #emptyOsDiskType>
+                    <span class="nui-select-v2__placeholder">Select OS disk type</span>
+                </ng-template>
+            </ng-template>
+        </nui-form-field>
+        <nui-form-field caption="Virtual network" [showOptionalText]="false" [control]="settingsForm.controls.virtualNetwork" class="d-block mb-5">
+            <nui-select-v2 placeholder="Select a virtual networke" formControlName="virtualNetwork">
+                <nui-select-v2-option *ngFor="let network of virtualNetworks$ | async" [value]="network">{{ network }}</nui-select-v2-option>
+            </nui-select-v2>
+        </nui-form-field>
+        <nui-form-field caption="Subnet" [showOptionalText]="false" [control]="settingsForm.controls.subnet" class="d-block mb-5">
+            <nui-textbox placeholder="Enter a custom subnet mask to the new virtual machine name" formControlName="subnet"></nui-textbox>
+        </nui-form-field>
+        <nui-switch [value]="settingsForm.controls.enableRemoteDesktop.value" (valueChange)="settingsForm.patchValue({ enableRemoteDesktop: $event })">
+            Enable Remote desktop
+        </nui-switch>
+    </form>
+    <div class="ml-5">
+        <p class="nui-text-page">Form data</p>
+        <pre>{{ settingsForm.value | json }}</pre>
+    </div>
+</div>
