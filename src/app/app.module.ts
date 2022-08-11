@@ -39,6 +39,8 @@ import { CommonModule } from '@angular/common';
 import { AzureComponent } from './azure/azure.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { environment } from '../environments/environment';
+
 const isIE =
     window.navigator.userAgent.indexOf('MSIE ') > -1 ||
     window.navigator.userAgent.indexOf('Trident/') > -1;
@@ -53,7 +55,9 @@ export function MSALInstanceFactory(): IPublicClientApplication {
             clientId: '953830a8-1320-4ad6-8603-aa042d3d76f7',
             authority:
                 'https://login.microsoftonline.com/ac62f53a-8154-47ad-ae61-cc9b7273c672',
-            redirectUri: 'http://localhost:4200/',
+            redirectUri: environment.production
+                ? 'https://dmitry-lomakin.github.io/azure-poc-bc-3617/'
+                : 'http://localhost:4200/',
         },
         cache: {
             cacheLocation: BrowserCacheLocation.LocalStorage,
