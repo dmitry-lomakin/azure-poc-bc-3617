@@ -56,8 +56,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -125,6 +125,14 @@
             "production": {
               "devServerTarget": "angular11-sample-app:serve:production"
             }
+          }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://dmitry-lomakin.github.io/azure-poc-bc-3617/",
+            "name": "COVE DP instant recovery for Azure PoC",
+            "email": "dmitry.lomakin@n-able.com"
           }
         }
       }
