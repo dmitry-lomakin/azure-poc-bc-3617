@@ -33,7 +33,7 @@ export class AzureComponent implements OnInit, OnDestroy {
     selectedRegion$ = new BehaviorSubject<string>('');
 
     // https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/vmSizes?api-version=2022-03-01
-    availableSizes$ = new BehaviorSubject<string[]>([]);
+    availableSizes$ = new BehaviorSubject<{ id: string; numberOfCores: number; memoryInMB: number; price: number }[]>([]);
 
     // https://docs.microsoft.com/en-us/rest/api/compute/disks/create-or-update?tabs=HTTP#diskstorageaccounttypes
     osDiskTypes = [
@@ -150,10 +150,11 @@ export class AzureComponent implements OnInit, OnDestroy {
     refreshAvailableSizes(subscriptionId: string, location: string): void {
         this.http.get(`https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.Compute/locations/${location}/vmSizes?api-version=2022-03-01`)
             .subscribe((availableSizes: any) => {
-                const allAvailableSizes = availableSizes.value.map(({ name }: any) => name);
+                console.log('availableSizes', availableSizes);
+                const allAvailableSizes = availableSizes.value.map(({ name, numberOfCores, memoryInMB }: any) => ({ id: name, numberOfCores, memoryInMB, price: null }));
                 this.availableSizes$.next(allAvailableSizes);
                 if (allAvailableSizes.length) {
-                    this.settingsForm.patchValue({ vmSize: allAvailableSizes[0] });
+                    this.settingsForm.patchValue({ vmSize: allAvailableSizes[0].id });
                 }
             });
     }

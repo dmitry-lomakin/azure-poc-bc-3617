@@ -20,6 +20,7 @@
                 </ng-template>
             </ng-template>
         </nui-form-field>
+
         <nui-form-field caption="Resource group" [showOptionalText]="false" [control]="settingsForm.controls.resourceGroupName" class="d-block mb-5">
             <nui-select-v2 placeholder="Enter a resource group" formControlName="resourceGroupName">
                 <nui-select-v2-option *ngFor="let rg of resourceGroups$ | async" [value]="rg">
@@ -27,19 +28,42 @@
                 </nui-select-v2-option>
             </nui-select-v2>
         </nui-form-field>
+
         <nui-form-field caption="Virtual machine name" [control]="settingsForm.controls.virtualMachineName" class="d-block mb-5">
             <nui-textbox placeholder="Enter a virtual machine name" formControlName="virtualMachineName"></nui-textbox>
         </nui-form-field>
+
         <nui-form-field caption="Region" [showOptionalText]="false" [control]="settingsForm.controls.region" class="d-block mb-5">
             <nui-select-v2 placeholder="Select region" formControlName="region">
                 <nui-select-v2-option *ngFor="let region of regions$ | async" [value]="region">{{ region }}</nui-select-v2-option>
             </nui-select-v2>
         </nui-form-field>
+
         <nui-form-field caption="VM size" [showOptionalText]="false" [control]="settingsForm.controls.vmSize" class="d-block mb-5">
-            <nui-select-v2 placeholder="Select the size of your virtual machine" formControlName="vmSize">
-                <nui-select-v2-option *ngFor="let size of availableSizes$ | async" [value]="size">{{ size }}</nui-select-v2-option>
+            <nui-select-v2 placeholder="Select the size of your virtual machine" formControlName="vmSize" [displayValueTemplate]="selectedVmSizeTemplate" #vmSizeSelect>
+                <nui-select-v2-option *ngFor="let size of availableSizes$ | async" [value]="size.id" [displayValueContext]="size">
+                    <ng-container *ngTemplateOutlet="vmSizeDescriptionTemplate; context: { $implicit: size }"></ng-container>
+                </nui-select-v2-option>
             </nui-select-v2>
+            <ng-template #selectedVmSizeTemplate let-size>
+                <div class="nui-select-v2__value">
+                    <div *ngIf="size else emptyVmSize" class="d-flex align-items-center nui-select-v2__value-content">
+                        <ng-container *ngTemplateOutlet="vmSizeDescriptionTemplate; context: { $implicit: size }"></ng-container>
+                    </div>
+
+                    <nui-icon [style.transform]="vmSizeSelect.isDropdownOpen ? 'rotate(180deg)' : ''" icon="caret-down"></nui-icon>
+                </div>
+
+                <ng-template #emptyVmSize>
+                    <span class="nui-select-v2__placeholder">Select VM size</span>
+                </ng-template>
+            </ng-template>
+
+            <ng-template let-size #vmSizeDescriptionTemplate>
+                {{ size.id }} - {{ size.numberOfCores + (size.numberOfCores > 1 ? ' vcpus' : ' vcpu') }}, {{ size.memoryInMB / 1024 }} GiB memory (Price unavailable)
+            </ng-template>
         </nui-form-field>
+
         <nui-form-field caption="OS disk type" [showOptionalText]="false" [control]="settingsForm.controls.osDiskType" class="d-block mb-5">
             <nui-select-v2 placeholder="Select disk type" formControlName="osDiskType" [displayValueTemplate]="selectedOsDiskTypeTemplate" #osDiskTypeSelect>
                 <nui-select-v2-option *ngFor="let type of osDiskTypes" [value]="type.id" [displayValueContext]="type">
@@ -61,14 +85,17 @@
                 </ng-template>
             </ng-template>
         </nui-form-field>
+
         <nui-form-field caption="Virtual network" [showOptionalText]="false" [control]="settingsForm.controls.virtualNetwork" class="d-block mb-5">
             <nui-select-v2 placeholder="Select a virtual networke" formControlName="virtualNetwork">
                 <nui-select-v2-option *ngFor="let network of virtualNetworks$ | async" [value]="network">{{ network }}</nui-select-v2-option>
             </nui-select-v2>
         </nui-form-field>
+
         <nui-form-field caption="Subnet" [showOptionalText]="false" [control]="settingsForm.controls.subnet" class="d-block mb-5">
             <nui-textbox placeholder="Enter a custom subnet mask to the new virtual machine name" formControlName="subnet"></nui-textbox>
         </nui-form-field>
+
         <nui-switch [value]="settingsForm.controls.enableRemoteDesktop.value" (valueChange)="settingsForm.patchValue({ enableRemoteDesktop: $event })">
             Enable Remote desktop
         </nui-switch>

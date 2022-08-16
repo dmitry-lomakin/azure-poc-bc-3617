@@ -5,6 +5,8 @@ import { AuthenticationResult, InteractionStatus, InteractionType, PopupRequest,
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { environment } from '../environments/environment';
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -71,14 +73,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     logout() {
+        const appIndexUrl = environment.production ? '/azure-poc-bc-3617/' : '/';
+
         if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
             this.authService.logoutPopup({
-                postLogoutRedirectUri: "/",
-                mainWindowRedirectUri: "/"
+                postLogoutRedirectUri: appIndexUrl,
+                mainWindowRedirectUri: appIndexUrl
             });
         } else {
             this.authService.logoutRedirect({
-                postLogoutRedirectUri: "/",
+                postLogoutRedirectUri: appIndexUrl,
             });
         }
     }
